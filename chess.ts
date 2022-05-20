@@ -17,7 +17,7 @@ const resetBoard = () => {
 const underAttackByRook = (row, col) => {
   const underAttack = [];
   // under attack on row going left
-  tempCol = col - 1;
+  let tempCol = col - 1;
   while (true) {
     if (tempCol < 0) {
       break;
@@ -50,7 +50,7 @@ const underAttackByRook = (row, col) => {
   }
 
   // under attack on column going up
-  tempRow = row - 1;
+  let tempRow = row - 1;
   while (true) {
     if (tempRow < 0) {
       break;
@@ -120,8 +120,8 @@ const underAttackByKnight = (row, col) => {
 const underAttackByBishop = (row, col) => {
   const underAttack = [];
   // under attack going up and left
-  tempRow = row - 1;
-  tempCol = col - 1;
+  let tempRow = row - 1;
+  let tempCol = col - 1;
   while (true) {
     if (tempRow < 0 || tempCol < 0) {
       break;
@@ -207,7 +207,7 @@ const init = () => {
   }
   getPiecePositions();
 
-  document.querySelector(".arrows-container").style.position = "relative";
+  (document.querySelector(".arrows-container") as HTMLDivElement).style.position = "relative";
   boardSize = document.querySelector(".arrows-container").clientHeight / 8;
 };
 
@@ -224,10 +224,10 @@ const getPiecePositions = () => {
   const pieces = document.querySelector(".pieces").childNodes;
 
   for (const piece of pieces) {
-    const coord = piece.classList[1].split("-")[1];
+    const coord = (piece as HTMLElement).classList[1].split("-")[1];
     const col = parseInt(coord[1]);
     const row = parseInt(coord[3]);
-    const name = piece.style.backgroundImage.split("/")[7].substring(0, 2);
+    const name = (piece as HTMLElement).style.backgroundImage.split("/")[7].substring(0, 2);
     console.log("playerColour is ", playerColour);
     if (playerColour === "w") {
       board[8 - row][col - 1] = name;
@@ -238,27 +238,34 @@ const getPiecePositions = () => {
   return board;
 };
 
-const getFriendlyPiecesUnderAttack = () => {
+const getPiecesUnderAttack = () => {
   let underAttack = [];
   const enemyColour = playerColour === "w" ? "b" : "w";
   for (let row = 0; row < 8; row++) {
     for (let col = 0; col < 8; col++) {
       // Friendly pieces under attack by pawn
-      if (board[row][col] === enemyColour + "p") {
-        if (
-          row + 1 < 8 &&
-          col - 1 > 0 &&
-          board[row + 1][col - 1][0] === playerColour
-        ) {
-          underAttack.push([row + 1, col - 1, "red"]);
+      if (!board[row][col]){
+        continue;
+      }
+      if (board[row][col][1] === "p") {
+        if (board[row][col][0] === enemyColour ){
+          if (
+            row + 1 < 8 &&
+            col - 1 > 0 &&
+            board[row + 1][col - 1][0] === playerColour
+          ) {
+            underAttack.push([row + 1, col - 1, "red"]);
+          }
+          if (
+            row + 1 < 8 &&
+            col + 1 < 8 &&
+            board[row + 1][col + 1][0] === playerColour
+          ) {
+            underAttack.push([row + 1, col + 1, "red"]);
+          }
+
         }
-        if (
-          row + 1 < 8 &&
-          col + 1 < 8 &&
-          board[row + 1][col + 1][0] === playerColour
-        ) {
-          underAttack.push([row + 1, col + 1, "red"]);
-        }
+       
       }
 
       // Friendly pieces under attack by rook
@@ -309,7 +316,7 @@ const mainLoop = () => {
   getPiecePositions();
   console.log("board: ", board);
   deleteHighlights();
-  const underAttack = getFriendlyPiecesUnderAttack();
+  const underAttack = getPiecesUnderAttack();
   //   console.log("underAttack: ", underAttack);
   for (const square of underAttack) {
     highlightSquareByCoordinate(square[0], square[1], square[2]);
