@@ -1,0 +1,12 @@
+{
+  "name": "ChessAid",
+  "description": "Helps users visualize the board on chess.com by highlighting pieces under attack by the enemy in red, enemy pieces under attack in green, and squares controlled by the enemy in orange. Only works on https://www.chess.com/live/* . Disclaimer: Using this aid during a rated game is a direct violation of the chess.com fair play policy. It is only for use in unrated games as a training aid, and you must notify your opponent if you are going to be using it. I will not be held responsible if you fail to follow the rules outlined in the chess.com fair play policy. ",
+  "version": "1.0",
+  "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": ["https://www.chess.com/live/*"],
+      "js": ["chess.js"]
+    }
+  ]
+}
